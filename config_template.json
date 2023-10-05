@@ -1,0 +1,7 @@
+{
+    "isModuleEnabled": true,
+    "rustChannelId": "",
+    "jobs": {
+        "pollNewRustItemShop.js": true
+    }
+}
