@@ -1,12 +1,12 @@
 <div align="center">
 	<p>
-		<img src="https://raw.githubusercontent.com/alexriley1223/bishop-rustitemshop/rework/static/bishopbanner.png" alt="Bishop Rust Item Shop Banner" />
+		<img src="https://raw.githubusercontent.com/alexriley1223/bishop-rustitemshop/static/bishopbanner.png" alt="Bishop Rust Item Shop Banner" />
 	</p>
 	<br />
 	<p>
 		<img src="https://img.shields.io/github/license/alexriley1223/bishop-rustitemshop" />
 		<img src="https://img.shields.io/github/v/tag/alexriley1223/bishop-rustitemshop"/>
-		<img src="https://img.shields.io/badge/Bishop-version-7046ff" />
+		<img src="https://img.shields.io/badge/Bishop-4.x-7046ff" />
 	</p>
 </div>
 

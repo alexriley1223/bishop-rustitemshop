@@ -1,6 +1,6 @@
 {
     "name": "bishop-rustitemshop",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Send new Rust game item shop updates into a channel on the Bishop Discord bot",
     "author": "Alex Riley",
     "license": "GNU GENERAL PUBLIC LICENSE",
