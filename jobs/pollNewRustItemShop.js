@@ -1,20 +1,16 @@
 const CronJob = require('cron').CronJob;
 const { getParentDirectoryString } = require('@helpers/utils');
-const log = require('@helpers/logger');
 const { rustChannelId } = require('../config.json');
 const { jobs } = require('../config.json');
 const axios = require('axios');
 const fs = require('fs');
+const BishopJob = require('@classes/BishopJob');
 
 let pullItemDataInterval;
 
-module.exports = function(client) {
-
-	const job = {};
-
-	job.enabled = jobs[getParentDirectoryString(__filename, __dirname, 'jobs')];
-
-	job.executeJob = function() {
+module.exports = new BishopJob({
+	enabled: jobs[getParentDirectoryString(__filename, __dirname, 'jobs')],
+	init: async function(client) {
 		new CronJob(
 			'0 14 * * 4',
 			async function() {
@@ -26,13 +22,11 @@ module.exports = function(client) {
 			null,
 			true,
 			'America/Indianapolis');
-	};
-
-	return job;
-};
+	},
+});
 
 function getScmmShop(client) {
-	log.info('Rust Item Store', '✅ Pulling item store data.');
+	client.logger.info('Rust Item Store', '✅ Pulling item store data.');
 	axios.get('https://rust.scmm.app/api/store/current')
 		.then(response => {
 			const newShopId = response.data.id;
@@ -46,7 +40,7 @@ function getScmmShop(client) {
 						throw Error('❌ Failed to create old shop file.');
 					}
 					else {
-						log.info('Rust Item Store', '✅ Successfully created old shop file.');
+						client.logger.info('RustItemStore', 'Successfully created old shop file.');
 						oldShopExisted = false;
 					}
 				});
@@ -66,10 +60,10 @@ function getScmmShop(client) {
 					});
 					fs.writeFileSync(__dirname + '/../old_shop.txt', `${newShopId}`, (err) => {
 						if (err) {
-							throw Error('❌ Failed to update old shop file.');
+							throw Error('Failed to update old shop file.');
 						}
 						else {
-							log.info('Rust Item Store', '✅ Successfully updated old shop file.');
+							client.logger.info('Rust Item Store', 'Successfully updated old shop file.');
 						}
 					});
 				}
@@ -84,6 +78,6 @@ function getScmmShop(client) {
 			}
 		})
 		.catch(error => {
-			log.error(`Rust Item Shop', '❌ Failed to fetch item shop API.\n${error}`);
+			client.logger.error(`Rust Item Shop', 'Failed to fetch item shop API.\n${error}`);
 		});
 }

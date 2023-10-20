@@ -6,7 +6,7 @@
 	<p>
 		<img src="https://img.shields.io/github/license/alexriley1223/bishop-rustitemshop" />
 		<img src="https://img.shields.io/github/v/tag/alexriley1223/bishop-rustitemshop"/>
-		<img src="https://img.shields.io/badge/Bishop-4.x-7046ff" />
+		<img src="https://img.shields.io/badge/Bishop-5.x-7046ff" />
 	</p>
 </div>
 
