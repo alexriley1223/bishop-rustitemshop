@@ -16,7 +16,7 @@ module.exports = new BishopJob({
 			async function() {
 				pullItemDataInterval = setInterval(function() {
 					getScmmShop(client);
-				}, 900000); // Every 15 minutes keep checking
+				}, 900000);
 				getScmmShop(client);
 			},
 			null,
@@ -26,7 +26,7 @@ module.exports = new BishopJob({
 });
 
 function getScmmShop(client) {
-	client.logger.info('Rust Item Store', '✅ Pulling item store data.');
+	client.logger.info('Rust Item Store', 'Pulling item store data.');
 	axios.get('https://rust.scmm.app/api/store/current')
 		.then(response => {
 			const newShopId = response.data.id;
@@ -37,7 +37,7 @@ function getScmmShop(client) {
 			if (!fs.existsSync(__dirname + '/../old_shop.txt')) {
 				fs.writeFileSync(__dirname + '/../old_shop.txt', `${newShopId}`, (err) => {
 					if (err) {
-						throw Error('❌ Failed to create old shop file.');
+						throw Error('Failed to create old shop file.');
 					}
 					else {
 						client.logger.info('RustItemStore', 'Successfully created old shop file.');
