@@ -26,11 +26,12 @@ module.exports = new BishopJob({
 });
 
 function getScmmShop(client) {
-	client.logger.info('Rust Item Store', 'Pulling item store data.');
+	client.bishop.logger.info('Rust Item Store', 'Pulling item store data.');
 	axios.get('https://rust.scmm.app/api/store/current')
 		.then(response => {
 			const newShopId = response.data.id;
 			const newShopImage = response.data.itemsThumbnailUrl;
+			const shopName = response.data.name ?? '';
 			let oldShopExisted = true;
 
 			/* Check if old shop file exists */
@@ -40,7 +41,7 @@ function getScmmShop(client) {
 						throw Error('Failed to create old shop file.');
 					}
 					else {
-						client.logger.info('RustItemStore', 'Successfully created old shop file.');
+						client.bishop.logger.info('RustItemStore', 'Successfully created old shop file.');
 						oldShopExisted = false;
 					}
 				});
@@ -56,14 +57,14 @@ function getScmmShop(client) {
 						files: [
 							{ attachment: `${newShopImage}`, name: `item_shop_${now.toDateString()}.png` },
 						],
-						content: `Rust Item Store for ${now.toDateString()}`,
+						content: `Rust Item Store for ${now.toDateString()} \n **${shopName}**`,
 					});
 					fs.writeFileSync(__dirname + '/../old_shop.txt', `${newShopId}`, (err) => {
 						if (err) {
 							throw Error('Failed to update old shop file.');
 						}
 						else {
-							client.logger.info('Rust Item Store', 'Successfully updated old shop file.');
+							client.bishop.logger.info('Rust Item Store', 'Successfully updated old shop file.');
 						}
 					});
 				}
@@ -73,11 +74,11 @@ function getScmmShop(client) {
 					files: [
 						{ attachment: `${newShopImage}`, name: `item_shop_${now.toDateString()}.png` },
 					],
-					content: `Rust Item Store for ${now.toDateString()}`,
+					content: `Rust Item Store for ${now.toDateString()} \n **${shopName}**`,
 				});
 			}
 		})
 		.catch(error => {
-			client.logger.error(`Rust Item Shop', 'Failed to fetch item shop API.\n${error}`);
+			client.bishop.logger.error(`Rust Item Shop', 'Failed to fetch item shop API.\n${error}`);
 		});
 }
