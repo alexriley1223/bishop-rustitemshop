@@ -5,6 +5,7 @@ const { jobs } = require('../config.json');
 const axios = require('axios');
 const fs = require('fs');
 const BishopJob = require('@classes/BishopJob');
+const { EmbedBuilder } = require('discord.js');
 
 let pullItemDataInterval;
 
@@ -32,7 +33,39 @@ function getScmmShop(client) {
 			const newShopId = response.data.id;
 			const newShopImage = response.data.itemsThumbnailUrl;
 			const shopName = response.data.name ?? '';
+			const now = new Date();
+
 			let oldShopExisted = true;
+
+			/* Shop URL can be nullable */
+			if(!newShopImage) {
+				clearInterval(pullItemDataInterval);
+		
+				const itemListEmbed = new EmbedBuilder()
+				.setColor(client.bishop.color)
+				.setTitle(`${client.bishop.name} `)
+                .setThumbnail(`${response.data.items[0].iconUrl}`)
+				.setDescription(`Rust Item Store for ${now.toDateString()} \n **${shopName}**`)
+				.setTimestamp()
+				.setFooter({
+					text: `Pulled using the ${client.bishop.name} Bot`
+				});
+
+				response.data.items.forEach(item => {
+					itemListEmbed.addFields(
+						{
+							name: `${item.name}`,
+							value: `$${item.storePriceUsd / 100}`
+						}
+					)
+				});
+				
+				return client.channels.cache.get(rustChannelId).send({
+					content: `No item shop image found. Showing list instead.`,
+					embeds: [itemListEmbed]
+				});
+			}
+
 
 			/* Check if old shop file exists */
 			if (!fs.existsSync(__dirname + '/../old_shop.txt')) {
@@ -47,7 +80,6 @@ function getScmmShop(client) {
 				});
 			}
 
-			const now = new Date();
 			if (oldShopExisted) {
 				const oldShopId = fs.readFileSync(__dirname + '/../old_shop.txt', 'utf8');
 

@@ -4,6 +4,7 @@ const { getParentDirectoryString } = require('@helpers/utils');
 const { rustChannelId } = require('../config.json');
 const { commands } = require('../config.json');
 const axios = require('axios');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = new BishopCommand({
 	enabled: commands[getParentDirectoryString(__filename, __dirname)],
@@ -16,6 +17,32 @@ module.exports = new BishopCommand({
             const shopName = response.data.name ?? '';
             const now = new Date(response.data.start);
 
+            if(!shopImage) {
+				const itemListEmbed = new EmbedBuilder()
+				.setColor(interaction.client.bishop.color)
+				.setTitle(`${interaction.client.bishop.name} `)
+                .setThumbnail(`${response.data.items[0].iconUrl}`)
+				.setDescription(`Rust Item Store for ${now.toDateString()} \n **${shopName}**`)
+				.setTimestamp()
+				.setFooter({
+					text: `Pulled using the ${interaction.client.bishop.name} Bot`
+				});
+
+				response.data.items.forEach(item => {
+					itemListEmbed.addFields(
+						{
+							name: `${item.name}`,
+							value: `$${item.storePriceUsd / 100}`
+						}
+					)
+				});
+				
+				return interaction.client.channels.cache.get(rustChannelId).send({
+					content: `No item shop image found. Showing list instead.`,
+					embeds: [itemListEmbed]
+				});
+			}
+
             interaction.client.channels.cache.get(rustChannelId).send({
                 files: [
                     { attachment: `${shopImage}`, name: `item_shop_${now.toDateString()}.png` },
@@ -24,7 +51,7 @@ module.exports = new BishopCommand({
             });
         });
 
-		interaction.reply({
+		await interaction.reply({
 			content: `Posted current item shop in Rust channel.`,
 			ephemeral: true,
 		});

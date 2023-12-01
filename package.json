@@ -1,6 +1,6 @@
 {
     "name": "bishop-rustitemshop",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "description": "Send new Rust game item shop updates into a channel on the Bishop Discord bot",
     "repository": {
         "type": "git",
